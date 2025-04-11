@@ -6,6 +6,7 @@ use std::path::PathBuf;
 pub struct AppState {
     pub share_dir: PathBuf,
     pub share_key: String,
+    pub greet: String,
 }
 
 #[derive(Template)]
@@ -25,4 +26,12 @@ pub struct LoginForm {
 #[template(path = "list.html")]
 pub struct ListTemplate {
     pub files: Vec<String>,
+    pub greet: String,
+}
+
+#[derive(Template)]
+#[template(path = "error.html")]
+pub struct ErrorTemplate {
+    pub error_code: String,
+    pub error_message: String,
 }

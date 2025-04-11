@@ -1,7 +1,7 @@
 use crate::{
     auth::verify_cookie_key,
     file_utils::{error_response, should_include_file, validate_path},
-    models::{AppState, ListTemplate, LoginForm, LoginTemplate},
+    models::{AppState, ErrorTemplate, ListTemplate, LoginForm, LoginTemplate},
     zip_utils::{calculate_directory_hash, serve_zip_file},
 };
 use askama::Template;
@@ -21,7 +21,11 @@ use tokio::io::AsyncReadExt;
 use tokio_util::io::ReaderStream;
 use tower_cookies::{Cookie as TowerCookie, Cookies};
 
-pub async fn show_login_form(cookies: Cookies) -> impl IntoResponse {
+pub async fn show_login_form(State(state): State<AppState>, cookies: Cookies) -> impl IntoResponse {
+    if verify_cookie_key(&cookies, &state.share_key) {
+        return Redirect::to("/").into_response();
+    }
+
     let token = generate_csrf_token();
     let mut csrf_cookie = TowerCookie::new("csrf_token", token.clone());
     csrf_cookie.set_http_only(true);
@@ -273,9 +277,24 @@ pub async fn index(State(state): State<AppState>, cookies: Cookies) -> Response 
         }
     }
 
-    let template = ListTemplate { files };
+    let template = ListTemplate {
+        files,
+        greet: state.greet,
+    };
     match template.render() {
         Ok(html) => Html(html).into_response(),
         Err(_) => error_response(StatusCode::INTERNAL_SERVER_ERROR, "Template error"),
+    }
+}
+
+pub async fn handle_404() -> impl IntoResponse {
+    let template = ErrorTemplate {
+        error_code: "404".to_string(),
+        error_message: "Page not found".to_string(),
+    };
+
+    match template.render() {
+        Ok(html) => Html(html).into_response(),
+        Err(_) => StatusCode::NOT_FOUND.into_response(),
     }
 }

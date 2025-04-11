@@ -1,9 +1,13 @@
 {% extends "base.html" %} {% block inner_html %}
-<h1>Вітаю, панове з Photovision. Посилання для завантаження внизу</h1>
+<h1>{{ greet }}</h1>
 
 <ul>
     <li>
-        <a href="/download-zip" class="acc">Завантажити все одразу в .zip</a>
+        <h3>
+            <a href="/download-zip" class="acc"
+                >Завантажити все одразу в .zip</a
+            >
+        </h3>
     </li>
 </ul>
 

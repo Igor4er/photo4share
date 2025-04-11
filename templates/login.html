@@ -15,10 +15,16 @@
                 readonly
                 onfocus="this.removeAttribute('readonly');"
                 placeholder="Код в коментарі до замовлення"
+                data-lpignore="true"
             />
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
         </div>
         <button type="submit" class="pa">Увійти</button>
     </form>
 </div>
+<script>
+    setTimeout(function () {
+        document.getElementById("key").focus();
+    }, 100);
+</script>
 {% endblock %}

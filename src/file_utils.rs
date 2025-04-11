@@ -1,3 +1,5 @@
+use crate::models::ErrorTemplate;
+use askama::Template;
 use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
@@ -58,6 +60,21 @@ pub async fn should_include_file(base_dir: &Path, path: &Path) -> io::Result<boo
     }
 }
 
-pub fn error_response(status: StatusCode, message: &'static str) -> Response {
-    (status, message).into_response()
+pub fn error_response(status: StatusCode, message: &str) -> Response {
+    let template = ErrorTemplate {
+        error_code: status.as_u16().to_string(),
+        error_message: message.to_string(),
+    };
+
+    match template.render() {
+        Ok(html) => Response::builder()
+            .status(status)
+            .header("Content-Type", "text/html; charset=utf-8")
+            .body(axum::body::Body::from(html))
+            .unwrap_or_else(|_| status.into_response()),
+        Err(_) => {
+            // Fallback if template rendering fails
+            status.into_response()
+        }
+    }
 }

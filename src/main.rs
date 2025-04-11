@@ -19,6 +19,7 @@ async fn main() {
     let state = AppState {
         share_dir: env::var("SHARE_DIR").expect("SHARE_DIR not set").into(),
         share_key: env::var("SHARE_KEY").expect("SHARE_KEY not set"),
+        greet: env::var("GREET").expect("GREET not set"),
     };
 
     let app = Router::new()
@@ -27,6 +28,7 @@ async fn main() {
         .route("/login", post(routes::process_login))
         .route("/download-zip", get(routes::download_zip))
         .route("/download/{filename}", get(routes::download_file))
+        .fallback(routes::handle_404)
         .with_state(state)
         .layer(CookieManagerLayer::new());
 
