@@ -1,0 +1,24 @@
+{% extends "base.html" %} {% block inner_html %}
+<div class="cform">
+    <h2>Введіть ключ доступу</h2>
+    {% if error != "" %}
+    <p class="e">{{ error }}</p>
+    {% endif %}
+    <form method="post" action="/login">
+        <div class="mb">
+            <label for="key">Ключ доступу:</label>
+            <input
+                type="password"
+                id="key"
+                name="key"
+                autocomplete="off"
+                readonly
+                onfocus="this.removeAttribute('readonly');"
+                placeholder="Код в коментарі до замовлення"
+            />
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+        </div>
+        <button type="submit" class="pa">Увійти</button>
+    </form>
+</div>
+{% endblock %}

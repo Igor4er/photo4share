@@ -1,0 +1,15 @@
+{% extends "base.html" %} {% block inner_html %}
+<h1>Вітаю, панове з Photovision. Посилання для завантаження внизу</h1>
+
+<ul>
+    <li>
+        <a href="/download-zip" class="acc">Завантажити все одразу в .zip</a>
+    </li>
+</ul>
+
+<ul>
+    {% for file in files %}
+    <li><a href="/download/{{file}}">{{file}}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
