@@ -12,6 +12,7 @@ use axum::{
 use dotenvy::dotenv;
 use std::env;
 use tower_cookies::CookieManagerLayer;
+use tower_http::services::ServeDir;
 
 #[tokio::main]
 async fn main() {
@@ -28,6 +29,7 @@ async fn main() {
         .route("/login", post(routes::process_login))
         .route("/download-zip", get(routes::download_zip))
         .route("/download/{filename}", get(routes::download_file))
+        .nest_service("/static", ServeDir::new("static"))
         .fallback(routes::handle_404)
         .with_state(state)
         .layer(CookieManagerLayer::new());

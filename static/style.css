@@ -1,0 +1,58 @@
+body {
+    background-color: #222222;
+    color: #eeeeee;
+    letter-spacing: 0.35px;
+}
+a {
+    color: #cfcfcf;
+    text-decoration: underline;
+}
+a:visited {
+    color: #b6b6b6;
+    text-decoration: underline;
+}
+.it {
+    font-style: italic;
+}
+button {
+    height: 3vh;
+    width: 75px;
+    text-align: center;
+}
+.e {
+    color: #dd4646;
+}
+a.acc {
+    color: #c7dd46;
+}
+a.acc:visited {
+    color: #7bdd46;
+}
+.cform {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.ltext {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.mb {
+    margin-bottom: 16px;
+}
+label {
+    display: block;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+}
+input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    font-size: 1.1em;
+    box-sizing: border-box;
+    height: 2.5em;
+}
+.pa {
+    padding: 1px;
+}
