@@ -1,6 +1,7 @@
-{% extends "base.html" %} {% block inner_html %}
+{% extends "base.html" %} {% block title %}Файли{% endblock %} {% block
+inner_html %}
 <h1>{{ greet }}</h1>
-
+{% if files.len() > 0 %}
 <ul>
     <li>
         <h3>
@@ -16,4 +17,9 @@
     <li><a href="/download/{{file}}">{{file}}</a></li>
     {% endfor %}
 </ul>
-{% endblock %}
+{% else %}
+<h2>
+    <span class="e">Майже помилка: </span>Файлів немає, схоже хтось їх видалив
+    або не додав з самого початку
+</h2>
+{% endif %} {% endblock %}

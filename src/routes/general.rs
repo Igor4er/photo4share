@@ -19,8 +19,13 @@ pub async fn index(State(state): State<AppState>, cookies: Cookies) -> Response 
     }
 
     let mut entries = match fs::read_dir(&state.share_dir).await {
-        Ok(e) => e,
-        Err(_) => return error_response(StatusCode::INTERNAL_SERVER_ERROR, "Can't read directory"),
+        Ok(o) => o,
+        Err(e) => {
+            return error_response(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Can't read directory: {}", e.to_string()).as_str(),
+            );
+        }
     };
 
     let mut files = vec![];

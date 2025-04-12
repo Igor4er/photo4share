@@ -22,12 +22,18 @@ async fn main() {
         greet: env::var("GREET").expect("GREET not set"),
     };
 
+    let login_router = Router::new()
+        .route("/login", get(routes::show_login_form))
+        .route("/login", post(routes::process_login));
+
+    let downloads_router = Router::new()
+        .route("/download-zip", get(routes::download_zip))
+        .route("/download/{filename}", get(routes::download_file));
+
     let app = Router::new()
         .route("/", get(routes::index))
-        .route("/login", get(routes::show_login_form))
-        .route("/login", post(routes::process_login))
-        .route("/download-zip", get(routes::download_zip))
-        .route("/download/{filename}", get(routes::download_file))
+        .merge(login_router)
+        .merge(downloads_router)
         .nest_service("/static", ServeDir::new("static"))
         .fallback(routes::handle_404)
         .with_state(state)
