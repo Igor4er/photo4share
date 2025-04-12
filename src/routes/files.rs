@@ -27,6 +27,7 @@ pub async fn download_file(
     cookies: Cookies,
     AxumPath(filename): AxumPath<String>,
 ) -> Response {
+    info!("File download requested: {}", filename);
     if !verify_cookie_key(&cookies, &state.share_key) {
         return Redirect::to("/login").into_response();
     }

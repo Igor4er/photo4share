@@ -8,10 +8,12 @@ use std::path::Path;
 use std::path::PathBuf;
 use tokio::fs;
 use tokio::io;
+use tracing::{debug, error, warn};
 
 pub async fn validate_path(base_dir: &Path, filename: &str) -> io::Result<Option<PathBuf>> {
     // Basic filename safety check
     if filename.contains("..") || filename.contains('/') || filename.contains('\\') {
+        warn!("Potential path traversal attempt detected: {}", filename);
         return Ok(None);
     }
 
@@ -21,15 +23,28 @@ pub async fn validate_path(base_dir: &Path, filename: &str) -> io::Result<Option
     // Verify canonical path is within share directory to prevent path traversal
     let canonical_path = match fs::canonicalize(&filepath).await {
         Ok(p) => p,
-        Err(_) => return Ok(None),
+        Err(e) => {
+            debug!("Failed to canonicalize path: {:?}, error: {}", filepath, e);
+            return Ok(None);
+        }
     };
 
     let canonical_base = match fs::canonicalize(base_dir).await {
         Ok(b) => b,
-        Err(_) => return Ok(None),
+        Err(e) => {
+            error!(
+                "Failed to canonicalize base directory: {:?}, error: {}",
+                base_dir, e
+            );
+            return Ok(None);
+        }
     };
 
     if !canonical_path.starts_with(&canonical_base) {
+        warn!(
+            "Path traversal attempt detected! Path: {:?} is outside base dir: {:?}",
+            canonical_path, canonical_base
+        );
         return Ok(None);
     }
 
@@ -61,6 +76,11 @@ pub async fn should_include_file(base_dir: &Path, path: &Path) -> io::Result<boo
 }
 
 pub fn error_response(status: StatusCode, message: &str) -> Response {
+    debug!(
+        "Generating error response: {} - {}",
+        status.as_u16(),
+        message
+    );
     let template = ErrorTemplate {
         error_code: status.as_u16().to_string(),
         error_message: message.to_string(),
@@ -72,8 +92,8 @@ pub fn error_response(status: StatusCode, message: &str) -> Response {
             .header("Content-Type", "text/html; charset=utf-8")
             .body(axum::body::Body::from(html))
             .unwrap_or_else(|_| status.into_response()),
-        Err(_) => {
-            // Fallback if template rendering fails
+        Err(e) => {
+            error!("Failed to render error template: {}", e);
             status.into_response()
         }
     }
