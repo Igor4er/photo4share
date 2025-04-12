@@ -1,11 +1,11 @@
 use crate::models::ErrorTemplate;
 use askama::Template;
-use axum::{
-    http::StatusCode,
-    response::{IntoResponse, Response},
-};
+use axum::http::StatusCode;
+use axum::response::IntoResponse;
+use axum::response::Response;
 use path_clean::PathClean;
-use std::path::{Path, PathBuf};
+use std::path::Path;
+use std::path::PathBuf;
 use tokio::fs;
 use tokio::io;
 

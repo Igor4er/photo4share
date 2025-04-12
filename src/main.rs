@@ -5,10 +5,9 @@ mod routes;
 mod zip_utils;
 
 use crate::models::AppState;
-use axum::{
-    Router,
-    routing::{get, post},
-};
+use axum::Router;
+use axum::routing::get;
+use axum::routing::post;
 use dotenvy::dotenv;
 use std::env;
 use tower_cookies::CookieManagerLayer;
