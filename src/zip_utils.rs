@@ -38,10 +38,18 @@ pub async fn calculate_directory_hash(dir: &Path) -> std::io::Result<String> {
 
 pub fn serve_zip_file(file: File) -> Response {
     let stream = ReaderStream::new(file);
+
+    let today = chrono::Local::now();
+    let formatted_date = today.format("%d.%m.%y").to_string();
+    let filename = format!("{}_files.zip", formatted_date);
+
     match Response::builder()
         .status(StatusCode::OK)
         .header("Content-Type", "application/zip")
-        .header("Content-Disposition", "attachment; filename=\"files.zip\"")
+        .header(
+            "Content-Disposition",
+            format!("attachment; filename=\"{}\"", filename),
+        )
         .body(Body::from_stream(stream))
     {
         Ok(response) => response,

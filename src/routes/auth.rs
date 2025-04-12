@@ -64,7 +64,10 @@ pub async fn process_login(
     cookies: Cookies,
     Form(form): Form<LoginForm>,
 ) -> Response {
-    // Verify CSRF token
+    if verify_cookie_key(&cookies, &state.share_key) {
+        return Redirect::to("/").into_response();
+    }
+
     let stored_token = cookies.get("csrf_token").map(|c| c.value().to_string());
     match stored_token {
         Some(token) if token == form.csrf_token => {
