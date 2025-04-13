@@ -21,6 +21,7 @@ use tokio::fs::File;
 use tokio::io::AsyncReadExt;
 use tokio_util::io::ReaderStream;
 use tower_cookies::Cookies;
+use tracing::info;
 
 pub async fn download_file(
     State(state): State<AppState>,
