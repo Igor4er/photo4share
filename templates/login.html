@@ -36,8 +36,10 @@ inner_html %}
     </form>
 </div>
 <script>
-    setTimeout(function () {
-        document.getElementById("key").focus();
-    }, 100);
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            document.getElementById("key").focus();
+        }, 100);
+    });
 </script>
 {% endblock %}

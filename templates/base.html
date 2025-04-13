@@ -2,11 +2,28 @@
 <html lang="uk" data-theme="dark">
     <head>
         <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{% block title %} photo4share {% endblock %} | by Ig4Er</title>
+        <link rel="preload" href="/static/style.css" as="style" />
         <link rel="stylesheet" href="/static/style.css" />
 
         <!-- need for compat w/ dark reader-->
         <meta name="color-scheme" content="dark" />
+
+        <style>
+            body {
+                opacity: 0;
+            }
+            body.loaded {
+                opacity: 1;
+                transition: opacity 0.2s;
+            }
+        </style>
+        <script>
+            window.addEventListener("load", function () {
+                document.body.classList.add("loaded");
+            });
+        </script>
     </head>
     <body>
         <main>
