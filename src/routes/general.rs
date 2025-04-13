@@ -5,11 +5,15 @@ use crate::models::AppState;
 use crate::models::ErrorTemplate;
 use crate::models::ListTemplate;
 use askama::Template;
+use axum::extract::Path;
 use axum::extract::State;
 use axum::http::StatusCode;
+use axum::http::header;
 use axum::response::Html;
 use axum::response::IntoResponse;
 use axum::response::Response;
+use mime_guess;
+use rust_embed::RustEmbed;
 use tokio::fs;
 use tower_cookies::Cookies;
 
@@ -57,5 +61,33 @@ pub async fn handle_404() -> impl IntoResponse {
     match template.render() {
         Ok(html) => Html(html).into_response(),
         Err(_) => StatusCode::NOT_FOUND.into_response(),
+    }
+}
+
+#[derive(RustEmbed)]
+#[folder = "static/"]
+struct StaticAssets;
+
+pub async fn static_handler(Path(path): Path<String>) -> Response {
+    match StaticAssets::get(&path) {
+        Some(content) => {
+            let mime = mime_guess::from_path(&path).first_or_octet_stream();
+
+            match Response::builder()
+                .status(StatusCode::OK)
+                .header(header::CONTENT_TYPE, mime.as_ref())
+                .body(axum::body::Body::from(content.data))
+            {
+                Ok(response) => response,
+                Err(_) => error_response(
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "Failed to build response",
+                ),
+            }
+        }
+        None => error_response(
+            StatusCode::NOT_FOUND,
+            &format!("Static file not found: {}", path),
+        ),
     }
 }

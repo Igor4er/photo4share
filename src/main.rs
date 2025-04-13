@@ -9,9 +9,9 @@ use axum::Router;
 use axum::routing::get;
 use axum::routing::post;
 use dotenvy::dotenv;
+use routes::static_handler;
 use std::env;
 use tower_cookies::CookieManagerLayer;
-use tower_http::services::ServeDir;
 use tracing::{Level, info};
 use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -54,7 +54,7 @@ async fn main() {
         .route("/", get(routes::index))
         .merge(login_router)
         .merge(downloads_router)
-        .nest_service("/static", ServeDir::new("static"))
+        .route("/static/{path}", get(static_handler))
         .fallback(routes::handle_404)
         .with_state(state)
         .layer(CookieManagerLayer::new());
