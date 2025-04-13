@@ -1,19 +1,7 @@
 {% extends "base.html" %} {% block title %}Вхід{% endblock %} {% block
 inner_html %}
 <div class="cform">
-    <h2>
-        Введіть ключ доступу
-        <noscript>
-            <div class="e">
-                <p>
-                    Не знаю яким чином але ваш браузер не підтримує JS. Ці
-                    допотопні технології в наш сучасний час підтримує будь який
-                    тостер... тому... зробіть щось з цим. Також ви вірогідно
-                    просто не зможете ввійти без цього
-                </p>
-            </div>
-        </noscript>
-    </h2>
+    <h2>Введіть ключ доступу</h2>
     {% if error != "" %}
     <p class="e">{{ error }}</p>
     {% endif %}
@@ -25,8 +13,6 @@ inner_html %}
                 id="key"
                 name="key"
                 autocomplete="off"
-                readonly
-                onfocus="this.removeAttribute('readonly');"
                 placeholder="Код в коментарі до замовлення"
                 data-lpignore="true"
             />
